@@ -16,37 +16,32 @@
 @code {
     private int currentCount = 0;
 
-    /// <summary>
-    /// Wird beim Initialisieren der Komponente aufgerufen und registriert den Benachrichtigungshandler.
-    /// </summary>
+    // Wird beim Initialisieren der Komponente aufgerufen und registriert den Benachrichtigungshandler.
     protected override void OnInitialized()
     {
-    logger.LogInformation("NotificationReceiver initialisiert");
+        logger.LogInformation("NotificationReceiver initialisiert");
         notifyService.OnNotificationReceived += HandleNotification;
-    logger.LogInformation("Ereignishandler für Benachrichtigungen registriert");
+        logger.LogInformation("Eventhandler für Benachrichtigungen registriert");
     }
 
-    /// <summary>
-    /// Ereignishandler: Erhöht den Zähler bei eingehender Benachrichtigung und aktualisiert die UI.
-    /// </summary>
-    /// <remarks>
-    /// Verwendet <see cref="InvokeAsync(Action)"/>, um einen sicheren UI-Refresh im richtigen Synchronisationskontext auszuführen.
-    /// </remarks>
+    // Eventhandler: Erhöht den Zähler bei eingehender Benachrichtigung und aktualisiert die UI.
+    // Wichtig! Diese Methode muss asynchron aufgerufen werden damit eine Aktualisierung der UI erfolgen kann.
+    // Ansonsten treten Exceptions auf.
     private async void HandleNotification()
     {
-    logger.LogInformation("Benachrichtigung empfangen");
+        logger.LogInformation("Benachrichtigung empfangen");
         currentCount++;
+
+        // Es ist wichtig diese Zeile auszuführen, um den UI-Thread korrekt zu aktualisieren.
         await InvokeAsync(StateHasChanged);
-    logger.LogInformation("Status aktualisiert. Aktueller Zähler: {Count}", currentCount);
+        logger.LogInformation("Status aktualisiert. Aktueller Zähler: {Count}", currentCount);
     }
 
-    /// <summary>
-    /// Deregistriert den Ereignishandler, wenn die Komponente freigegeben wird, um Speicherlecks zu vermeiden.
-    /// </summary>
+    // Deregistriert den Eventhandler, wenn die Komponente freigegeben wird, um memoryleaks zu vermeiden.
     public void Dispose()
     {
-    logger.LogInformation("NotificationReceiver wird freigegeben");
+        logger.LogInformation("NotificationReceiver wird freigegeben");
         notifyService.OnNotificationReceived -= HandleNotification;
-    logger.LogInformation("Ereignishandler für Benachrichtigungen deregistriert");
+        logger.LogInformation("Eventhandler für Benachrichtigungen deregistriert");
     }
 }

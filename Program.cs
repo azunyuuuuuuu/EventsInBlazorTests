@@ -29,11 +29,13 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
+// API-Endpunkt zum Auslösen von Benachrichtigungen
 app.MapGet("/api/notify", ([FromServices] ILogger<Program> logger, [FromServices] NotifyService notifyService) =>
 {
     logger.LogInformation("Anfrage zum Auslösen eines Ereignisses erhalten");
     try
     {
+        // Sendet eine Notification an den NotifyService, welches die Informationen an die Komponenten weitergibt
         notifyService.SendNotification();
     }
     catch (Exception ex)

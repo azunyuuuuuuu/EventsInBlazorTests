@@ -4,9 +4,7 @@ internal class NotifyService(ILogger<NotifyService> logger)
 {
     public event Action? OnNotificationReceived;
 
-    /// <summary>
-    /// Sendet eine Benachrichtigung an alle registrierten Abonnenten, indem das Ereignis ausgelöst wird.
-    /// </summary>
+    // Sendet eine Benachrichtigung an alle registrierten Abonnenten.
     public void SendNotification()
     {
         logger.LogInformation("Sende Benachrichtigung");
@@ -14,8 +12,7 @@ internal class NotifyService(ILogger<NotifyService> logger)
         logger.LogInformation("Benachrichtigung gesendet");
     }
 
-    /// <summary>
-    /// Internes Hilfsmittel zum sicheren Auslösen des Ereignisses (ruft alle Handler auf, falls vorhanden).
-    /// </summary>
+
+    // Klasseninterne Funktion zum Triggern des Eventhandlers
     private void NotificationReceivedHandler() => OnNotificationReceived?.Invoke();
 }

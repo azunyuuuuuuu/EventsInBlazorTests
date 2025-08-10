@@ -31,17 +31,17 @@ app.MapRazorComponents<App>()
 
 app.MapGet("/api/notify", ([FromServices] ILogger<Program> logger, [FromServices] NotifyService notifyService) =>
 {
-    logger.LogInformation("Received request to raise event");
+    logger.LogInformation("Anfrage zum Auslösen eines Ereignisses erhalten");
     try
     {
         notifyService.SendNotification();
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, "Error occurred while raising event");
+        logger.LogError(ex, "Fehler beim Auslösen des Ereignisses");
         return Results.Problem(ex.Message);
     }
-    logger.LogInformation("Event raised successfully");
+    logger.LogInformation("Ereignis erfolgreich ausgelöst");
     return Results.Ok();
 });
 

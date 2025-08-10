@@ -1,0 +1,40 @@
+﻿@page "/notificationreceiver"
+@using EventsInBlazorTests.Services
+@implements IDisposable
+
+@inject ILogger<NotificationReceiver> logger
+@inject NotifyService notifyService
+
+<PageTitle>Notification Receiver</PageTitle>
+
+<h1>Notification Receiver</h1>
+
+<p role="status">This page is designed to receive notifications.</p>
+
+<p role="status">Current count: @currentCount</p>
+
+@code {
+    private int currentCount = 0;
+
+    protected override void OnInitialized()
+    {
+        logger.LogInformation("NotificationReceiver initialized");
+        notifyService.OnNotificationReceived += HandleNotification;
+        logger.LogInformation("Event handler registered for notification events");
+    }
+
+    private async void HandleNotification()
+    {
+        logger.LogInformation("Notification received");
+        currentCount++;
+        await InvokeAsync(StateHasChanged);
+        logger.LogInformation("State updated. Current count: {Count}", currentCount);
+    }
+
+    public void Dispose()
+    {
+        logger.LogInformation("Disposing NotificationReceiver");
+        notifyService.OnNotificationReceived -= HandleNotification;
+        logger.LogInformation("Event handler unregistered for notification events");
+    }
+}
